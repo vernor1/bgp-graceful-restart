@@ -39,12 +39,12 @@ docker-compose exec app sh -c "./speaker.py --host speaker-2 --add-peers --resta
 
 ### Show reflector's neighbors
 ```
-docker-compose exec reflector-gobgp sh -c "./gobgp neighbor"
-docker-compose exec reflector-gobgp sh -c "./gobgp neighbor <neighbor-ip>"
+docker-compose exec reflector-1 sh -c "./gobgp neighbor"
+docker-compose exec reflector-1 sh -c "./gobgp neighbor <neighbor-ip>"
 ```
 
 ### Show reflector's RIB
 ```
-docker-compose exec reflector-gobgp sh -c "./gobgp global rib"
-docker-compose exec reflector-gobgp sh -c "./gobgp global rib -j 192.168.100.100/32"
+docker-compose exec reflector-1 sh -c "./gobgp global rib"
+docker-compose exec reflector-1 sh -c "./gobgp global rib -j 192.168.100.100/32"
 ```
