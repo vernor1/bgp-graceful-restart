@@ -1,0 +1,64 @@
+[global.config]
+  as = $AS
+  router-id = "$ROUTER_ID"
+
+[[defined-sets.neighbor-sets]]
+  neighbor-set-name = "switches"
+  neighbor-info-list = ["$SWITCH_ADDR_1", "$SWITCH_ADDR_2"]
+
+[[policy-definitions]]
+  name = "drop_to_cds"
+  [[policy-definitions.statements]]
+    name = "pass_to_switches"
+    [policy-definitions.statements.conditions.match-neighbor-set]
+      neighbor-set = "switches"
+    [policy-definitions.statements.actions]
+      route-disposition = "accept-route"
+  [[policy-definitions.statements]]
+    name = "pass_to_cds"
+    [policy-definitions.statements.actions]
+      route-disposition = "reject-route"
+
+[[peer-groups]]
+  [peer-groups.config]
+    peer-group-name = "cdpods"
+    peer-as = $AS
+  [[peer-groups.afi-safis]]
+    [peer-groups.afi-safis.config]
+      afi-safi-name = "ipv4-unicast"
+  [[peer-groups.afi-safis]]
+    [peer-groups.afi-safis.config]
+      afi-safi-name = "ipv6-unicast"
+  [peer-groups.timers.config]
+    hold-time = 300
+  [peer-groups.graceful-restart.config]
+    enabled = true
+
+[[dynamic-neighbors]]
+  [dynamic-neighbors.config]
+    prefix = "172.0.0.0/8"
+    peer-group = "cdpods"
+
+[[peer-groups]]
+  [peer-groups.config]
+    peer-group-name = "switches"
+    peer-as = $AS
+  [[peer-groups.afi-safis]]
+    [peer-groups.afi-safis.config]
+      afi-safi-name = "ipv4-unicast"
+  [[peer-groups.afi-safis]]
+    [peer-groups.afi-safis.config]
+      afi-safi-name = "ipv6-unicast"
+  [peer-groups.route-reflector.config]
+    route-reflector-client = true
+    route-reflector-cluster-id = "$ROUTER_ID"
+
+[[neighbors]]
+  [neighbors.config]
+    neighbor-address = "$SWITCH_ADDR_1"
+    peer-group = "switches"
+
+[[neighbors]]
+  [neighbors.config]
+    neighbor-address = "$SWITCH_ADDR_2"
+    peer-group = "switches"

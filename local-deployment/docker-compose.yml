@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: ../
+      target: app
+    environment:
+    - AS=65000
+    - REFLECTOR_ADDR_1=reflector-1
+    - REFLECTOR_ADDR_2=reflector-2
+    entrypoint:
+    - "tail"
+    - "-f"
+    - "/dev/null"
+    networks:
+    - test
+  speaker-1:
+    build: speaker
+    networks:
+    - test
+  speaker-2:
+    build: speaker
+    networks:
+    - test
+  reflector-1:
+    build: reflector
+    networks:
+    - test
+  reflector-2:
+    build: reflector
+    networks:
+    - test
+networks:
+  test:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.20.0.0/24
